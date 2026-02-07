@@ -1,7 +1,7 @@
 {
     "archive_path": "./context_archive",
     "max_archive_size_mb": 5000,
-    "context_window_size": 4096,
-    "enable_rag": true,
-    "rag_retrieve_count": 5
+    "context_window_size": 8192,
+    "enable_rag": false,
+    "rag_retrieve_count": 1
 }

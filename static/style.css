@@ -120,6 +120,7 @@
 }
 
 body {
+    /* Keep headings/menus in Fantasy font */
     font-family: 'Crimson Text', serif;
     background: 
         linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
@@ -407,8 +408,12 @@ label,
 }
 
 .message {
-    font-size: 1.15rem;
-    line-height: 1.75;
+    /* CLEANER SANS-SERIF FONT FOR READABILITY */
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+
     padding: 16px 24px;
     border-radius: 16px;
     position: relative;
@@ -553,8 +558,11 @@ textarea {
     color: var(--text-ink);
     border: 1px solid var(--border-subtle);
     border-bottom: 2px solid var(--accent-wood);
-    font-family: 'Crimson Text', serif;
-    font-size: 1.2rem;
+    
+    /* CLEANER SANS-SERIF FONT FOR INPUT */
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.1rem;
+    
     padding: 12px 16px;
     resize: none;
     outline: none;

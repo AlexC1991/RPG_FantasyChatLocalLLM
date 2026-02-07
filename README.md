@@ -163,41 +163,41 @@ Scene Setting:
 ### 🛡️ Censored/Safe Models (Good for Creative Writing)
 
 **High VRAM (12GB+) - Desktop AMD/Nvidia/Intel**
-- **Mistral-7B-Instruct-v0.3** (Q8) - Excellent for coherent storytelling, follows instructions well
-- **Llama-3.1-8B-Instruct** (Q8) - Great dialogue, strong characterization
-- **Nous-Hermes-2-Mistral-7B** (Q8) - Creative but balanced, good for fantasy/sci-fi
+- **Mistral-Nemo-12B-Instruct-v1 (Q8) - The current king of safe reasoning and storytelling, smarter than Llama 3
+- **Command-R-v01-35B (Q4_K_M) - Incredible for RAG and lore, very distinct writing style (Requires 24GB)
+- **Llama-3.1-8B-Instruct (Q8) - Great dialogue, strong characterization, very stable
 
 **Mid VRAM (8GB) - Desktop AMD/Nvidia/Intel**
-- **Mistral-7B-Instruct-v0.2** (Q5_K_M) - Solid all-rounder, efficient
-- **Llama-3.1-8B-Instruct** (Q4_K_M) - Good quality at lower VRAM
-- **Phi-3-Medium-4K** (Q5_K_M) - Surprisingly creative for its size
+- **Mistral-Nemo-12B-Instruct-v1 (Q4_K_M) - Fits in 8GB, significantly smarter than older 7B models
+- **Llama-3.1-8B-Instruct (Q6_K) - High precision version, great for complex instructions
+- **Phi-3.5-Medium-Instruct (Q4_K_M) - Surprisingly creative and intelligent for its size
 
 **Low VRAM (4-6GB) - Laptop Dedicated GPU's or APU Systems AMD/Nvidia/Intel**
 - **Llama-3.2-3B-Instruct** (Q5_K_M) - Small but capable, great for laptops
-- **Phi-3-Mini-4K** (Q5_K_M) - Fast, efficient, good for quick responses
-- **TinyLlama-1.1B-Chat** (Q8) - Ultra-low VRAM, surprisingly coherent
+- **Phi-3.5-Mini-Instruct (Q6_K) - Extremely fast, surprisingly smart for <4GB VRAM
+- **Gemma-2-9B-It (Q4_K_S) - Google's model, excellent creative writing (tight fit for 6GB
 
 ### 🔓 Unrestricted/Uncensored Models (Vivid & Unlocked)
 
 **High VRAM (12GB+) - Desktop AMD/Nvidia/Intel**
-- **Dolphin-2.9.2-Llama-3.1-8B** (Q8) - Best uncensored model, excellent creativity
-- **WizardLM-2-8x22B** (Q4_K_M) - Massive context, very creative (needs 16GB+)
-- **Nous-Capybara-34B** (Q4_K_M) - Extremely creative, no filters (needs 20GB+)
+- **Magnum-v2.5-12b-kto (Q8) - The Gold Standard. Writes like a novelist, excellent anatomy/pacing
+- **Impish_Bloodmoon_12B (Q8) - Designed for dark fantasy, monsters, and villain protagonists
+- **L3-8B-Stheno-v3.2 (Q8) - Roleplay specialist, understands "Show, Don't Tell" perfectly
 
 **Mid VRAM (8GB) - Desktop AMD/Nvidia/Intel**
-- **Dolphin-2.9-Mistral-7B** (Q5_K_M) - Solid uncensored baseline
-- **WizardLM-Uncensored-13B** (Q4_K_M) - Good balance of creativity and coherence
-- **Samantha-Mistral-7B** (Q5_K_M) - Character-focused, emotionally expressive
+- **Magnum-v2.5-12b-kto (Q4_K_M) - Fits in 8GB. The best prose you will get on mid-range hardware
+- **L3-8B-Stheno-v3.2 (Q6_K) - Highly Recommended. Funny, smart, and completely uncensored
+- **Llama-3-Lumimaid-8B-v0.2 (Q6_K) - Tuned for romance and submission/maid tropes, very compliant
 
 **Low VRAM (4-6GB) - Laptop Dedicated GPU's or APU Systems AMD/Nvidia/Intel**
-- **Dolphin-Phi-2.7B** (Q8) - Uncensored small model, laptop-friendly
-- **OpenHermes-2.5-Mistral-7B** (Q3_K_M) - Compressed but capable
-- **TinyDolphin-2.8-1.1B** (Q8) - Ultra-compact uncensored option
+- **L3-8B-Stheno-v3.2 (Q4_K_S) - Best for Laptops. Smarter and "wilder" than any 3B model
+- **Llama-3-Lumimaid-8B-v0.2 (Q4_K_M) - Good fallback if Stheno is too creative for you
+- **Qwen2.5-7B-Uncensored (Q4_K_M) - Excellent logic and spatial awareness, very fast
 
 **Model Format Notes:**
 - **Q8** = Highest quality, needs more VRAM
-- **Q5_K_M** = Good balance of quality and size
-- **Q4_K_M** = Smaller, fits in less VRAM
+- **Q5_K_M / Q6_K** = Excellent balance (Sweet spot for 8GB cards)
+- **Q4_K_M** = Standard choice for laptops/mid-range
 - **Q3_K_M** = Compressed, lowest quality but fastest
 
 **Where to Download:**
