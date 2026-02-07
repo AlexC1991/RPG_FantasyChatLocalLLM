@@ -1,0 +1,4 @@
+# This file ensures the context_archive/ folder exists in Git
+# Archived conversation history is stored here when context window fills up
+# RAG (Retrieval-Augmented Generation) searches these archives for relevant memories
+# Contents are ignored by .gitignore to keep your conversations private

@@ -1,0 +1,9 @@
+# This file ensures the models/ folder exists in Git
+# Place your .gguf model files in this folder
+# 
+# Recommended models:
+#   - Llama-3.2-3B-Instruct (Q5_K_M) - Good for 4-6GB VRAM
+#   - Mistral-7B-Instruct (Q4_K_M) - Good for 8GB VRAM
+#   - Dolphin-2.9-Mistral-7B (Q5_K_M) - Uncensored creative writing
+#
+# Download from: https://huggingface.co/models?library=gguf

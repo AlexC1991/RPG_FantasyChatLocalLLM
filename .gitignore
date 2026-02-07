@@ -6,12 +6,24 @@ venv/
 .env
 
 # AI Models (CRITICAL: These are too large for Git)
+# Keep the models/ folder but ignore .gguf files inside
 models/*.gguf
+
+# Engine Files
 engine/
 *.dll
 
 # App Specific
+# Keep fantasies/ folder but ignore JSON files inside
 fantasies/*.json
+
+# Context Archive
+# Keep context_archive/ folder but ignore contents
+context_archive/*
+!context_archive/.gitkeep
+
+# Settings
+global_settings.json
 
 # Logs
 *.log
