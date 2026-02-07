@@ -162,34 +162,34 @@ Scene Setting:
 
 ### 🛡️ Censored/Safe Models (Good for Creative Writing)
 
-**High VRAM (12GB+) - Desktop RTX 3060/4060 or better:**
+**High VRAM (12GB+) - Desktop AMD/Nvidia/Intel**
 - **Mistral-7B-Instruct-v0.3** (Q8) - Excellent for coherent storytelling, follows instructions well
 - **Llama-3.1-8B-Instruct** (Q8) - Great dialogue, strong characterization
 - **Nous-Hermes-2-Mistral-7B** (Q8) - Creative but balanced, good for fantasy/sci-fi
 
-**Mid VRAM (8GB) - Desktop RTX 3050 / Laptop RTX 4050:**
+**Mid VRAM (8GB) - Desktop AMD/Nvidia/Intel**
 - **Mistral-7B-Instruct-v0.2** (Q5_K_M) - Solid all-rounder, efficient
 - **Llama-3.1-8B-Instruct** (Q4_K_M) - Good quality at lower VRAM
 - **Phi-3-Medium-4K** (Q5_K_M) - Surprisingly creative for its size
 
-**Low VRAM (4-6GB) - Laptop RTX 3050 / Integrated GPUs:**
+**Low VRAM (4-6GB) - Laptop Dedicated GPU's or APU Systems AMD/Nvidia/Intel**
 - **Llama-3.2-3B-Instruct** (Q5_K_M) - Small but capable, great for laptops
 - **Phi-3-Mini-4K** (Q5_K_M) - Fast, efficient, good for quick responses
 - **TinyLlama-1.1B-Chat** (Q8) - Ultra-low VRAM, surprisingly coherent
 
 ### 🔓 Unrestricted/Uncensored Models (Vivid & Unlocked)
 
-**High VRAM (12GB+):**
+**High VRAM (12GB+) - Desktop AMD/Nvidia/Intel**
 - **Dolphin-2.9.2-Llama-3.1-8B** (Q8) - Best uncensored model, excellent creativity
 - **WizardLM-2-8x22B** (Q4_K_M) - Massive context, very creative (needs 16GB+)
 - **Nous-Capybara-34B** (Q4_K_M) - Extremely creative, no filters (needs 20GB+)
 
-**Mid VRAM (8GB):**
+**Mid VRAM (8GB) - Desktop AMD/Nvidia/Intel**
 - **Dolphin-2.9-Mistral-7B** (Q5_K_M) - Solid uncensored baseline
 - **WizardLM-Uncensored-13B** (Q4_K_M) - Good balance of creativity and coherence
 - **Samantha-Mistral-7B** (Q5_K_M) - Character-focused, emotionally expressive
 
-**Low VRAM (4-6GB):**
+**Low VRAM (4-6GB) - Laptop Dedicated GPU's or APU Systems AMD/Nvidia/Intel**
 - **Dolphin-Phi-2.7B** (Q8) - Uncensored small model, laptop-friendly
 - **OpenHermes-2.5-Mistral-7B** (Q3_K_M) - Compressed but capable
 - **TinyDolphin-2.8-1.1B** (Q8) - Ultra-compact uncensored option
