@@ -5,19 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Fantasy Chat</title>
-    <!-- Fonts: Cinzel for headings, Crimson Text for body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
-        rel="stylesheet">
-    <!-- FontAwesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-
     <div class="book-container">
         <!-- LEFT PANEL: FANTASY LIBRARY -->
         <div class="sidebar">
@@ -44,8 +39,7 @@
             <header class="chat-header">
                 <h1 id="current-fantasy-title">Select a Fantasy...</h1>
                 <div class="header-controls">
-                    <button id="btn-reset-chat" class="icon-btn" title="Clear Chat History"
-                        style="display:none; margin-right: 10px;">
+                    <button id="btn-reset-chat" class="icon-btn" title="Clear Chat History" style="display:none; margin-right: 10px;">
                         <i class="fa-solid fa-rotate-left"></i>
                     </button>
                     <button id="btn-edit-fantasy" class="icon-btn" title="Edit Fantasy Details" style="display:none;">
@@ -58,7 +52,6 @@
                 <div class="chat-placeholder">
                     <p>Select a fantasy card from the library to begin your adventure.</p>
                 </div>
-                <!-- Chat Messages Injected Here -->
             </div>
 
             <footer class="chat-input-area">
@@ -99,8 +92,7 @@
 
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea id="fantasy-desc" rows="4"
-                                placeholder="A brief summary of the adventure..."></textarea>
+                            <textarea id="fantasy-desc" rows="4" placeholder="A brief summary of the adventure..."></textarea>
                         </div>
 
                         <div class="form-group">
@@ -120,8 +112,12 @@
                         <h3>AI Persona</h3>
                         <div class="form-group">
                             <label>System Prompt</label>
-                            <textarea id="fantasy-prompt" rows="12"
-                                placeholder="You are the Dungeon Master..."></textarea>
+                            <textarea id="fantasy-prompt" rows="8" placeholder="You are the Dungeon Master..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Starting Prompt</label>
+                            <textarea id="fantasy-starting-prompt" rows="3" placeholder="You enter the dark dungeon..."></textarea>
                         </div>
 
                         <fieldset class="model-settings">
@@ -134,8 +130,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Passion Level (<span id="temp-val">0.7</span>)</label>
-                                <div
-                                    style="display: flex; justify-content: space-between; font-size: 0.8rem; font-style: italic; opacity: 0.8; margin-bottom: 5px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-style: italic; opacity: 0.8; margin-bottom: 5px;">
                                     <span>Tame</span>
                                     <span>Wild</span>
                                 </div>
@@ -153,99 +148,61 @@
         </div>
     </div>
 
-    <!-- MODAL: GLOBAL SETTINGS -->
+    <!-- MODAL: GLOBAL SETTINGS (COMPACT TWO-COLUMN) -->
     <div id="modal-settings" class="modal hidden">
-        <div class="modal-content parchment-modal" style="max-width: 700px;">
-            <span class="close-modal" id="close-settings">&times;</span>
-            <h2 style="text-align: center; color: var(--accent-wood-dark); margin-bottom: 30px;">Global Settings</h2>
-            
-            <form id="form-settings" style="padding: 30px;">
-                
-                <!-- Archive Settings -->
-                <div class="settings-section">
-                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
-                        <i class="fa-solid fa-box-archive"></i> Archive Settings
-                    </h3>
-                    
+        <div class="modal-content parchment-modal">
+            <span class="close-modal">&times;</span>
+            <h2>⚙️ Global Settings</h2>
+
+            <div class="split-view-container">
+                <!-- LEFT COLUMN: Archive & Context -->
+                <div class="split-window">
+                    <h3>📦 Archive Settings</h3>
                     <div class="form-group">
                         <label>Archive Path</label>
-                        <input type="text" id="setting-archive-path" 
-                               placeholder="D:/AI_Fantasy_Archives" 
-                               style="font-family: 'Courier New', monospace; text-align: left;">
-                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
-                            Choose where to save old conversation history
-                        </small>
+                        <input type="text" id="archive-path" value="./context_archive">
+                        <small>Where to save old conversations</small>
                     </div>
-                    
                     <div class="form-group">
                         <label>Max Archive Size (MB)</label>
-                        <input type="number" id="setting-archive-size" 
-                               min="10" max="10000" value="100">
-                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
-                            Maximum folder size before cleanup (10-10000 MB)
-                        </small>
+                        <input type="number" id="max-archive-size" value="100" min="10" max="10000">
+                        <small>Total storage limit (10-10000 MB)</small>
                     </div>
-                </div>
 
-                <!-- Context Settings -->
-                <div class="settings-section" style="margin-top: 30px;">
-                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
-                        <i class="fa-solid fa-memory"></i> Context Settings
-                    </h3>
-                    
+                    <h3 style="margin-top: 30px;">💾 Context Settings</h3>
                     <div class="form-group">
                         <label>Context Window Size</label>
-                        <input type="number" id="setting-context-size" 
-                               min="512" max="32768" value="4096" step="512">
-                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
-                            Larger = longer conversations (requires more RAM)
-                        </small>
+                        <input type="number" id="context-window-size" value="4096" min="512" max="32768" step="512">
+                        <small>How much AI remembers at once (512-32768 tokens)</small>
                     </div>
                 </div>
 
-                <!-- RAG Settings -->
-                <div class="settings-section" style="margin-top: 30px;">
-                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
-                        <i class="fa-solid fa-brain"></i> RAG Memory System
-                    </h3>
-                    
+                <!-- RIGHT COLUMN: RAG & Stats -->
+                <div class="split-window">
+                    <h3>🧠 RAG Memory System</h3>
                     <div class="form-group">
                         <label style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                            <input type="checkbox" id="setting-enable-rag" 
-                                   style="width: auto; margin: 0;">
-                            Enable RAG (Retrieve old conversations)
+                            <input type="checkbox" id="enable-rag" checked>
+                            <span>Enable RAG (Retrieve old conversations)</span>
                         </label>
-                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
-                            AI can remember archived conversations
-                        </small>
+                        <small>AI can remember archived messages</small>
                     </div>
-                    
                     <div class="form-group">
                         <label>RAG Retrieve Count</label>
-                        <input type="number" id="setting-rag-count" 
-                               min="1" max="20" value="5">
-                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
-                            How many old messages to retrieve (1-20)
-                        </small>
+                        <input type="number" id="rag-retrieve-count" value="5" min="1" max="20">
+                        <small>How many old messages to find (1-20)</small>
                     </div>
-                </div>
 
-                <!-- Statistics Display -->
-                <div class="settings-section" style="margin-top: 30px;">
-                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
-                        <i class="fa-solid fa-chart-line"></i> Statistics
-                    </h3>
-                    <div id="stats-display" style="font-family: 'Courier New', monospace; font-size: 0.9rem; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px; text-align: left;">
-                        Loading...
+                    <h3 style="margin-top: 30px;">📊 Statistics</h3>
+                    <div id="stats-display" style="min-height: 150px; max-height: 250px; overflow-y: auto;">
+                        Engine not loaded yet. Start a conversation first.
                     </div>
                 </div>
-                
-                <div class="modal-actions" style="margin-top: 30px;">
-                    <button type="submit" class="btn-primary">
-                        <i class="fa-solid fa-save"></i> Save Settings
-                    </button>
-                </div>
-            </form>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+            </div>
         </div>
     </div>
 

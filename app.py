@@ -132,6 +132,116 @@ def delete_fantasy(fantasy_id):
         return jsonify({"status": "deleted"})
     return jsonify({"error": "Not found"}), 404
 
+@app.route('/api/initial-message', methods=['POST'])
+def get_initial_message():
+    """Generate the opening message from the AI to start the story"""
+    global engine
+    data = request.json
+    system_prompt = data.get('system_prompt', "You are a helpful assistant.")
+    model_config = data.get('model_config', {})
+    fantasy_id = data.get('fantasy_id', None)
+    user_name = data.get('user_name', 'User')
+    ai_name = data.get('ai_name', 'AI')
+    starting_prompt = data.get('starting_prompt', '')
+
+    requested_model = model_config.get('model', 'default')
+    
+    should_reload = False
+    if engine is None:
+        should_reload = True
+    elif requested_model != 'default' and requested_model != engine.model_name:
+        should_reload = True
+        
+    if should_reload:
+        try:
+            print(f"[VOX] Loading model: {requested_model}...")
+            settings = load_settings()
+            
+            model_path = None
+            if requested_model != 'default':
+                model_path = os.path.abspath(os.path.join(MODELS_DIR, requested_model))
+                
+            engine = VoxAPI(
+                model_path=model_path,
+                verbose=True,
+                n_ctx=settings.get('context_window_size', 4096),
+                archive_path=settings.get('archive_path', './context_archive'),
+                max_archive_size_mb=settings.get('max_archive_size_mb', 100),
+                enable_rag=settings.get('enable_rag', True),
+                rag_retrieve_count=settings.get('rag_retrieve_count', 5)
+            )
+        except Exception as e:
+            print(f"[ERROR] Failed to load model: {e}")
+            return jsonify({"error": f"Failed to load model: {e}"}), 500
+
+    if fantasy_id:
+        engine.set_fantasy_context(fantasy_id)
+    
+    # IMPROVED: More explicit bracket usage instructions
+    identity_instruction = f"""
+[System Note: You are roleplaying as {ai_name}. The user is {user_name}.
+
+CRITICAL FORMATTING RULES:
+- Use normal text for SPEECH/DIALOGUE (what {ai_name} says out loud)
+- Use [square brackets] ONLY for ACTIONS, GESTURES, and SCENE DESCRIPTIONS
+- Example: "Hello there." [waves hand] "Welcome to my shop."
+- DO NOT put dialogue inside brackets
+- DO NOT repeat what {user_name} says
+
+Start the story now with your opening message based on the scenario.]"""
+    
+    final_system_prompt = system_prompt + identity_instruction
+    
+    # Use starting prompt as the trigger
+    prompt = f"[Start the scene as {ai_name}. {starting_prompt}]"
+    
+    context_history = [
+        {"role": "system", "content": final_system_prompt},
+        {"role": "user", "content": prompt}
+    ]
+    
+    engine.history = context_history
+    
+    print(f"[VOX] Generating initial message for {ai_name}...")
+    
+    def generate():
+        prefix_to_strip = f"{ai_name}:"
+        buffer = ""
+        
+        for token in engine.chat(prompt, stream=True):
+            buffer += token
+            
+            if len(buffer) < len(prefix_to_strip) + 5:
+                if buffer.strip().startswith(prefix_to_strip):
+                    clean_content = buffer.split(prefix_to_strip, 1)[-1].lstrip()
+                    if clean_content:
+                        for char in clean_content:
+                            yield char
+                            print(char, end="", flush=True)
+                        buffer = ""
+                    continue
+                elif len(buffer) > len(prefix_to_strip) and not buffer.strip().startswith(prefix_to_strip):
+                     for char in buffer:
+                        yield char
+                        print(char, end="", flush=True)
+                     buffer = ""
+            else:
+                if buffer:
+                    for char in buffer:
+                        yield char
+                        print(char, end="", flush=True)
+                    buffer = ""
+        
+        if buffer:
+             clean_content = buffer.replace(prefix_to_strip, "").lstrip()
+             for char in clean_content:
+                yield char
+                print(char, end="", flush=True)
+
+        print("\n[VOX] Initial message complete.")
+
+    return Response(stream_with_context(generate()), mimetype='text/plain')
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
     global engine
@@ -178,7 +288,19 @@ def chat():
     user_name = data.get('user_name', 'User')
     ai_name = data.get('ai_name', 'AI')
     
-    identity_instruction = f"\n[System Note: Roleplay as {ai_name}. User is {user_name}. Use [brackets] for actions/narration. Write {ai_name}'s next response only. Do NOT repeat the user's dialogue.]"
+    # IMPROVED: More explicit bracket usage instructions
+    identity_instruction = f"""
+[System Note: You are roleplaying as {ai_name}. The user is {user_name}.
+
+CRITICAL FORMATTING RULES:
+- Use normal text for SPEECH/DIALOGUE (what {ai_name} says out loud)
+- Use [square brackets] ONLY for ACTIONS, GESTURES, and SCENE DESCRIPTIONS
+- Example: "Hello there." [waves hand] "Welcome to my shop."
+- DO NOT put dialogue inside brackets
+- DO NOT repeat what {user_name} says
+
+Write {ai_name}'s next response only.]"""
+    
     final_system_prompt = system_prompt + identity_instruction
 
     context_history = [{"role": "system", "content": final_system_prompt}]

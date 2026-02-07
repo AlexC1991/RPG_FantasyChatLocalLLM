@@ -11,8 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const elTitle = document.getElementById('current-fantasy-title');
     const elBtnNewFantasy = document.getElementById('btn-new-fantasy');
     const elBtnEditFantasy = document.getElementById('btn-edit-fantasy');
-    const elModal = document.getElementById('modal-fantasy');
-    const elCloseModal = document.querySelector('.close-modal');
+    const elModalFantasy = document.getElementById('modal-fantasy');
+    const elModalSettings = document.getElementById('modal-settings');
+    const elBtnGlobalSettings = document.getElementById('btn-global-settings');
+    const elCloseModals = document.querySelectorAll('.close-modal');
     const elFormFantasy = document.getElementById('form-fantasy');
     const elBtnDelete = document.getElementById('btn-delete-fantasy');
     const elModelSelect = document.getElementById('fantasy-model');
@@ -32,13 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INITIALIZATION ---
     fetchFantasies();
     fetchModels();
+    loadSettings();
 
     // --- EVENT LISTENERS ---
-    elBtnNewFantasy.addEventListener('click', () => openModal());
-    elBtnEditFantasy.addEventListener('click', () => {
-        const fantasy = fantasies.find(f => f.id === currentFantasyId);
-        if (fantasy) openModal(fantasy);
-    });
+    elBtnNewFantasy.addEventListener('click', () => openFantasyModal());
+    
+    if (elBtnEditFantasy) {
+        elBtnEditFantasy.addEventListener('click', () => {
+            const fantasy = fantasies.find(f => f.id === currentFantasyId);
+            if (fantasy) openFantasyModal(fantasy);
+        });
+    }
 
     elBtnReset.addEventListener('click', async () => {
         if (confirm("Are you sure you want to clear the chat history? This cannot be undone.")) {
@@ -46,8 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    elCloseModal.addEventListener('click', closeModal);
-    window.addEventListener('click', (e) => { if (e.target === elModal) closeModal(); });
+    elCloseModals.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.target.closest('.modal').classList.add('hidden');
+        });
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === elModalFantasy) closeFantasyModal();
+        if (e.target === elModalSettings) closeSettingsModal();
+    });
 
     elTempInput.addEventListener('input', (e) => elTempVal.textContent = e.target.value);
 
@@ -70,6 +84,90 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    if (elBtnGlobalSettings) {
+        elBtnGlobalSettings.addEventListener('click', openSettingsModal);
+    }
+
+    // --- SETTINGS MODAL FUNCTIONS (DEFINED EARLY) ---
+    async function openSettingsModal() {
+        elModalSettings.classList.remove('hidden');
+        await loadSettings();
+        await fetchStats();
+    }
+
+    function closeSettingsModal() {
+        elModalSettings.classList.add('hidden');
+    }
+
+    async function loadSettings() {
+        try {
+            const res = await fetch('/api/settings');
+            const settings = await res.json();
+            
+            document.getElementById('archive-path').value = settings.archive_path || './context_archive';
+            document.getElementById('max-archive-size').value = settings.max_archive_size_mb || 100;
+            document.getElementById('context-window-size').value = settings.context_window_size || 4096;
+            document.getElementById('enable-rag').checked = settings.enable_rag !== false;
+            document.getElementById('rag-retrieve-count').value = settings.rag_retrieve_count || 5;
+        } catch (error) {
+            console.error('Error loading settings:', error);
+        }
+    }
+
+    async function saveSettings() {
+        const settings = {
+            archive_path: document.getElementById('archive-path').value,
+            max_archive_size_mb: parseInt(document.getElementById('max-archive-size').value),
+            context_window_size: parseInt(document.getElementById('context-window-size').value),
+            enable_rag: document.getElementById('enable-rag').checked,
+            rag_retrieve_count: parseInt(document.getElementById('rag-retrieve-count').value)
+        };
+
+        try {
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            });
+            
+            alert('Settings saved! Please restart the server for changes to take effect.');
+            closeSettingsModal();
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            alert('Error saving settings. See console for details.');
+        }
+    }
+
+    async function fetchStats() {
+        try {
+            const res = await fetch('/api/stats');
+            const stats = await res.json();
+            
+            if (stats.error) {
+                document.getElementById('stats-display').textContent = stats.error;
+                return;
+            }
+            
+            let statsText = '';
+            statsText += `Model: ${stats.model || 'Not loaded'}\n`;
+            statsText += `Messages Processed: ${stats.messages_processed || 0}\n`;
+            statsText += `Context Usage: ${stats.context_tokens_used || 0} / ${stats.context_size || 0} tokens\n`;
+            statsText += `GPU Layers: ${stats.gpu_layers || 0}\n`;
+            statsText += `Archive Size: ${(stats.archive_size_mb || 0).toFixed(2)} MB\n`;
+            statsText += `RAG Enabled: ${stats.rag_enabled ? 'Yes' : 'No'}\n`;
+            
+            document.getElementById('stats-display').textContent = statsText;
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            document.getElementById('stats-display').textContent = 'Error loading statistics';
+        }
+    }
+
+    // Make functions available globally for onclick handlers
+    window.openSettingsModal = openSettingsModal;
+    window.closeSettingsModal = closeSettingsModal;
+    window.saveSettings = saveSettings;
+
     // --- API CALLS ---
 
     async function fetchFantasies() {
@@ -88,15 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const option = document.createElement('option');
             option.value = model;
 
-            let displayName = model;
-            const cleanName = model.replace(/\.gguf$/i, '');
+            let displayName = model.replace(/\.gguf$/i, '');
 
             if (model.toLowerCase().includes('dolphin')) {
-                displayName = `🔓 ${cleanName} (Unrestricted - Creative)`;
+                displayName = `🔓 ${displayName} (Unrestricted)`;
                 option.style.color = "#d9534f";
                 option.style.fontWeight = "bold";
             } else {
-                displayName = `🛡️ ${cleanName} (Safe - Restricted)`;
+                displayName = `🛡️ ${displayName} (Safe)`;
                 option.style.color = "#5cb85c";
             }
 
@@ -109,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = document.getElementById('fantasy-title').value;
         const desc = document.getElementById('fantasy-desc').value;
         const prompt = document.getElementById('fantasy-prompt').value;
+        const startingPrompt = document.getElementById('fantasy-starting-prompt').value;
         const id = document.getElementById('fantasy-id').value;
         const model = elModelSelect.value;
         const temp = parseFloat(elTempInput.value);
@@ -121,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title,
             description: desc,
             system_prompt: prompt,
+            starting_prompt: startingPrompt,
             model_config: { model, temperature: temp },
             theme: theme,
             user_name: userName,
@@ -140,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const data = await res.json();
-        closeModal();
+        closeFantasyModal();
         await fetchFantasies();
 
         if (!id) selectFantasy(data.id);
@@ -150,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function deleteFantasy() {
         const id = document.getElementById('fantasy-id').value;
         await fetch(`/api/fantasies/${id}`, { method: 'DELETE' });
-        closeModal();
+        closeFantasyModal();
         currentFantasyId = null;
         elTitle.textContent = "Select a Fantasy...";
         elChatWindow.innerHTML = '<div class="chat-placeholder"><p>Select a fantasy card from the library to begin your adventure.</p></div>';
@@ -246,6 +345,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- INITIAL AI MESSAGE ---
+    async function requestInitialMessage() {
+        if (!currentFantasyId) return;
+        
+        const fantasy = fantasies.find(f => f.id === currentFantasyId);
+        if (!fantasy) return;
+
+        const requestBody = {
+            system_prompt: fantasy.system_prompt || "",
+            user_name: fantasy.user_name || "User",
+            ai_name: fantasy.ai_name || "AI",
+            starting_prompt: fantasy.starting_prompt || "",
+            model_config: {
+                model: fantasy.model_config?.model || 'default',
+                temperature: parseFloat(fantasy.model_config?.temperature) || 0.7
+            },
+            fantasy_id: fantasy.id
+        };
+
+        try {
+            const response = await fetch('/api/initial-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) throw new Error('Initial message request failed');
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let accumulatedText = '';
+
+            const bubble = addMessageToChat('ai', '');
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                accumulatedText += chunk;
+
+                bubble.innerHTML = formatMessage(accumulatedText);
+                elChatWindow.scrollTop = elChatWindow.scrollHeight;
+            }
+
+            fantasy.history = [{ role: 'assistant', content: accumulatedText }];
+            await silentSave(fantasy);
+
+        } catch (error) {
+            console.error('Error getting initial message:', error);
+            elChatWindow.innerHTML = '<div class="chat-placeholder"><p>Failed to start story. Please try again.</p></div>';
+        }
+    }
+
     // --- UI HELPERS ---
 
     function renderFantasyList() {
@@ -254,8 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.className = `fantasy-item ${f.id === currentFantasyId ? 'active' : ''}`;
             div.innerHTML = `
-                <span class="item-title">${f.title}</span>
-                <span class="item-preview">${f.description.substring(0, 50)}...</span>
+                <div class="f-title">${f.title}</div>
+                <div class="f-desc" style="font-size:0.8em; color:#666;">${f.description.substring(0, 50)}...</div>
             `;
             div.onclick = () => selectFantasy(f.id);
             elFantasyList.appendChild(div);
@@ -268,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fantasy = fantasies.find(f => f.id === id);
         elTitle.textContent = fantasy.title;
-        elBtnEditFantasy.style.display = 'block';
+        elBtnEditFantasy.style.display = 'inline-block';
         document.getElementById('btn-reset-chat').style.display = 'inline-block';
         toggleInput(true);
 
@@ -276,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.book-container').className = `book-container theme-${theme}`;
 
         elChatWindow.innerHTML = '';
+        
         if (fantasy.history && fantasy.history.length > 0) {
             fantasy.history.forEach(msg => {
                 if (msg.role !== 'system') {
@@ -283,17 +437,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         } else {
-            elChatWindow.innerHTML = '<div class="chat-placeholder"><p>The story begins...</p></div>';
+            requestInitialMessage();
         }
     }
 
     function formatMessage(text) {
-        // Convert Markdown
-        let html = marked.parse(text);
-
-        // KEEP THE BRACKETS but style the content inside
-        // Replace [text] with styled span that INCLUDES the brackets
-        html = html.replace(/\[(.*?)\]/g, '<span class="narrative-text">[$1]</span>');
+        let html = text;
+        
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        html = html.replace(/\n/g, '<br>');
+        
+        html = html.replace(/\[(.*?)\]/g, '<span class="narrative-text">$1</span>');
 
         return html;
     }
@@ -309,8 +464,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (role === 'ai' && fantasy.ai_name) name = fantasy.ai_name;
         }
 
-        const header = document.createElement('span');
-        header.className = 'sender-name';
+        const header = document.createElement('div');
+        header.className = 'message-header';
         header.textContent = name;
         div.appendChild(header);
 
@@ -326,14 +481,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return contentDiv;
     }
 
-    function openModal(fantasy = null) {
-        elModal.classList.remove('hidden');
+    function openFantasyModal(fantasy = null) {
+        elModalFantasy.classList.remove('hidden');
         if (fantasy) {
             document.getElementById('modal-title').textContent = "Edit Fantasy";
             document.getElementById('fantasy-id').value = fantasy.id;
             document.getElementById('fantasy-title').value = fantasy.title;
             document.getElementById('fantasy-desc').value = fantasy.description;
             document.getElementById('fantasy-prompt').value = fantasy.system_prompt;
+            document.getElementById('fantasy-starting-prompt').value = fantasy.starting_prompt || "";
             elModelSelect.value = fantasy.model_config?.model || 'default';
             elTempInput.value = fantasy.model_config?.temperature || 0.7;
             elThemeSelect.value = fantasy.theme || 'default';
@@ -350,8 +506,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function closeModal() {
-        elModal.classList.add('hidden');
+    function closeFantasyModal() {
+        elModalFantasy.classList.add('hidden');
     }
 
     function toggleInput(enabled) {
@@ -359,143 +515,4 @@ document.addEventListener('DOMContentLoaded', () => {
         elBtnSend.disabled = !enabled;
         if (enabled) elUserInput.focus();
     }
-
-    // ========================================
-    // SETTINGS MODAL FUNCTIONALITY
-    // ========================================
-
-    // Open Settings Modal
-    async function openSettingsModal() {
-        document.getElementById('modal-settings').classList.remove('hidden');
-        
-        try {
-            const response = await fetch('/api/settings');
-            const settings = await response.json();
-            
-            document.getElementById('setting-archive-path').value = settings.archive_path || './context_archive';
-            document.getElementById('setting-archive-size').value = settings.max_archive_size_mb || 100;
-            document.getElementById('setting-context-size').value = settings.context_window_size || 4096;
-            document.getElementById('setting-enable-rag').checked = settings.enable_rag !== false;
-            document.getElementById('setting-rag-count').value = settings.rag_retrieve_count || 5;
-            
-            updateStatsDisplay();
-        } catch (error) {
-            console.error('Error loading settings:', error);
-            alert('Failed to load settings. Using defaults.');
-        }
-    }
-
-    // Close Settings Modal
-    function closeSettingsModal() {
-        document.getElementById('modal-settings').classList.add('hidden');
-    }
-
-    // Update Statistics Display
-    async function updateStatsDisplay() {
-        const statsDiv = document.getElementById('stats-display');
-        
-        try {
-            const response = await fetch('/api/stats');
-            
-            if (!response.ok) {
-                statsDiv.textContent = 'Engine not loaded yet. Start a conversation first.';
-                return;
-            }
-            
-            const stats = await response.json();
-            
-            const text = `Model: ${stats.model || 'N/A'}
-Mode: ${stats.mode || 'N/A'}
-GPU Layers: ${stats.gpu_layers || 0}
-
-Messages in RAM: ${stats.messages_in_history || 0}
-Total Archived: ${stats.total_archived_messages || 0}
-Context Size: ${stats.context_size || 0} tokens
-
-RAG Enabled: ${stats.rag_enabled ? 'Yes' : 'No'}
-Total Retrievals: ${stats.total_rag_retrievals || 0}
-Embedding Cache: ${stats.embedding_cache_size || 0}
-
-Archive Size: ${(stats.archive_size_mb || 0).toFixed(2)} MB
-Archive Path: ${stats.archive_path || 'N/A'}`;
-            
-            statsDiv.textContent = text;
-        } catch (error) {
-            statsDiv.textContent = 'Engine not initialized yet.';
-        }
-    }
-
-    // Save Settings
-    async function saveSettings(event) {
-        event.preventDefault();
-        
-        const settings = {
-            archive_path: document.getElementById('setting-archive-path').value,
-            max_archive_size_mb: parseInt(document.getElementById('setting-archive-size').value),
-            context_window_size: parseInt(document.getElementById('setting-context-size').value),
-            enable_rag: document.getElementById('setting-enable-rag').checked,
-            rag_retrieve_count: parseInt(document.getElementById('setting-rag-count').value)
-        };
-        
-        try {
-            const response = await fetch('/api/settings', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(settings)
-            });
-            
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                alert('Settings saved successfully!\n\nNote: Context window size changes require restarting the app.');
-                closeSettingsModal();
-            } else {
-                alert('Failed to save settings. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error saving settings:', error);
-            alert('Error saving settings: ' + error.message);
-        }
-    }
-
-    // Wire up settings event listeners
-    const settingsBtn = document.getElementById('btn-global-settings');
-    if (settingsBtn) {
-        settingsBtn.addEventListener('click', openSettingsModal);
-    }
-    
-    const closeSettingsBtn = document.getElementById('close-settings');
-    if (closeSettingsBtn) {
-        closeSettingsBtn.addEventListener('click', closeSettingsModal);
-    }
-    
-    const settingsForm = document.getElementById('form-settings');
-    if (settingsForm) {
-        settingsForm.addEventListener('submit', saveSettings);
-    }
-    
-    const settingsModal = document.getElementById('modal-settings');
-    if (settingsModal) {
-        settingsModal.addEventListener('click', function(e) {
-            if (e.target === settingsModal) {
-                closeSettingsModal();
-            }
-        });
-    }
-    
-    // ESC key closes modals
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeSettingsModal();
-            closeModal();
-        }
-    });
-
-    // Auto-refresh stats every 10 seconds when modal is open
-    setInterval(function() {
-        const modal = document.getElementById('modal-settings');
-        if (modal && !modal.classList.contains('hidden')) {
-            updateStatsDisplay();
-        }
-    }, 10000);
 });
