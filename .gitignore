@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# AI Models (CRITICAL: These are too large for Git)
+models/*.gguf
+engine/
+*.dll
+
+# App Specific
+fantasies/*.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

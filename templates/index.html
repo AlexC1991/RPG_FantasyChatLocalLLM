@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fantasy Chat</title>
+    <!-- Fonts: Cinzel for headings, Crimson Text for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="book-container">
+        <!-- LEFT PANEL: FANTASY LIBRARY -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Fantasy Library</h2>
+                <button id="btn-new-fantasy" class="icon-btn" title="Create New Fantasy">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+
+            <div id="fantasy-list" class="fantasy-list">
+                <!-- Fantasy Items Injected Here -->
+            </div>
+
+            <div class="sidebar-footer">
+                <button id="btn-global-settings" class="icon-btn settings-btn" title="Global Settings">
+                    <i class="fa-solid fa-cog"></i> Settings
+                </button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: CHAT INTERFACE -->
+        <main class="chat-interface">
+            <header class="chat-header">
+                <h1 id="current-fantasy-title">Select a Fantasy...</h1>
+                <div class="header-controls">
+                    <button id="btn-reset-chat" class="icon-btn" title="Clear Chat History"
+                        style="display:none; margin-right: 10px;">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <button id="btn-edit-fantasy" class="icon-btn" title="Edit Fantasy Details" style="display:none;">
+                        <i class="fa-solid fa-feather-pointed"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div id="chat-window" class="chat-window">
+                <div class="chat-placeholder">
+                    <p>Select a fantasy card from the library to begin your adventure.</p>
+                </div>
+                <!-- Chat Messages Injected Here -->
+            </div>
+
+            <footer class="chat-input-area">
+                <textarea id="user-input" placeholder="What do you do next?" rows="1" disabled></textarea>
+                <button id="btn-send" disabled><i class="fa-solid fa-paper-plane"></i></button>
+            </footer>
+        </main>
+    </div>
+
+    <!-- MODAL: FANTASY EDITOR -->
+    <div id="modal-fantasy" class="modal hidden">
+        <div class="modal-content parchment-modal">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">New Fantasy Card</h2>
+
+            <form id="form-fantasy">
+                <input type="hidden" id="fantasy-id">
+
+                <div class="split-view-container">
+                    <!-- LEFT WINDOW: FANTASY CARD -->
+                    <div class="split-window">
+                        <h3>Fantasy Details</h3>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="fantasy-title" required placeholder="The Dark Tower">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>User Name</label>
+                                <input type="text" id="fantasy-user-name" placeholder="You / Hero">
+                            </div>
+                            <div class="form-group">
+                                <label>AI Name</label>
+                                <input type="text" id="fantasy-ai-name" placeholder="Narrator / Character">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="fantasy-desc" rows="4"
+                                placeholder="A brief summary of the adventure..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Theme</label>
+                            <select id="fantasy-theme">
+                                <option value="default">Default (Parchment)</option>
+                                <option value="dark">Night (Dark)</option>
+                                <option value="blood">Blood (Red)</option>
+                                <option value="forest">Forest (Green)</option>
+                                <option value="mystic">Mystic (Purple)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT WINDOW: AI BRAIN -->
+                    <div class="split-window">
+                        <h3>AI Persona</h3>
+                        <div class="form-group">
+                            <label>System Prompt</label>
+                            <textarea id="fantasy-prompt" rows="12"
+                                placeholder="You are the Dungeon Master..."></textarea>
+                        </div>
+
+                        <fieldset class="model-settings">
+                            <legend>Model Settings</legend>
+                            <div class="form-group">
+                                <label>Model</label>
+                                <select id="fantasy-model">
+                                    <option value="default">Default</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Passion Level (<span id="temp-val">0.7</span>)</label>
+                                <div
+                                    style="display: flex; justify-content: space-between; font-size: 0.8rem; font-style: italic; opacity: 0.8; margin-bottom: 5px;">
+                                    <span>Tame</span>
+                                    <span>Wild</span>
+                                </div>
+                                <input type="range" id="fantasy-temp" min="0.1" max="1.5" step="0.1" value="0.7">
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="margin-top: 20px; border-top: 1px solid #c2b280; padding-top: 15px;">
+                    <button type="button" id="btn-delete-fantasy" class="btn-danger hidden">Delete</button>
+                    <button type="submit" class="btn-primary">Save Fantasy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+
+</html>
