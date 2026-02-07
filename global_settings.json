@@ -1,0 +1,7 @@
+{
+    "archive_path": "./context_archive",
+    "max_archive_size_mb": 100,
+    "context_window_size": 4096,
+    "enable_rag": true,
+    "rag_retrieve_count": 5
+}

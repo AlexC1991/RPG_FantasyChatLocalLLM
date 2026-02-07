@@ -1,43 +1,25 @@
 /* =========================================
-   FANTASY TOME STYLE: REFINED & HIGH CONTRAST
+   FANTASY TOME - 90% SCALED + WOODEN DESK
    ========================================= */
 
-/* THEMES - Tuned for maximum readability */
 :root {
-    /* Default (Parchment) */
     --bg-parchment: #f4eec2;
     --bg-parchment-dark: #e6dfb0;
-    --bg-chat-texture: url('https://www.transparenttextures.com/patterns/aged-paper.png');
-
-    /* High Contrast Ink Colors */
     --text-ink: #1a0f0a;
     --text-user: #2d1b12;
     --text-meta: #6d5448;
-
-    /* Accents */
     --accent-wood: #8b5a2b;
     --accent-wood-dark: #5e3b1f;
     --accent-gold: #c5a059;
-    --accent-gold-bright: #e6c67c;
-
-    /* Message-specific */
     --msg-user-bg: rgba(139, 90, 43, 0.18);
     --msg-user-border: rgba(139, 90, 43, 0.4);
     --msg-bot-bg: rgba(255, 255, 255, 0.75);
     --msg-bot-border: rgba(197, 160, 89, 0.5);
-
-    /* Shadows & Effects */
-    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.3);
     --shadow-text-light: 0 1px 0 rgba(255, 255, 255, 0.6);
-
     --border-subtle: rgba(139, 90, 43, 0.2);
-    --border-solid: rgba(139, 90, 43, 0.6);
-
-    --transition-smooth: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-smooth: all 0.25s ease;
 }
 
-/* Dark Theme */
 .theme-dark {
     --bg-parchment: #252530;
     --bg-parchment-dark: #1b1b24;
@@ -52,11 +34,9 @@
     --msg-bot-bg: rgba(255, 255, 255, 0.08);
     --msg-bot-border: rgba(160, 160, 255, 0.25);
     --border-subtle: rgba(160, 160, 255, 0.2);
-    --border-solid: rgba(160, 160, 255, 0.5);
     --shadow-text-light: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Blood Theme */
 .theme-blood {
     --bg-parchment: #2a0a0a;
     --bg-parchment-dark: #1a0000;
@@ -71,11 +51,9 @@
     --msg-bot-bg: rgba(255, 255, 255, 0.08);
     --msg-bot-border: rgba(255, 51, 51, 0.25);
     --border-subtle: rgba(255, 51, 51, 0.2);
-    --border-solid: rgba(255, 51, 51, 0.5);
     --shadow-text-light: 0 1px 2px rgba(0, 0, 0, 1);
 }
 
-/* Forest Theme */
 .theme-forest {
     --bg-parchment: #0f1f15;
     --bg-parchment-dark: #051005;
@@ -90,11 +68,9 @@
     --msg-bot-bg: rgba(255, 255, 255, 0.08);
     --msg-bot-border: rgba(76, 175, 80, 0.25);
     --border-subtle: rgba(76, 175, 80, 0.2);
-    --border-solid: rgba(76, 175, 80, 0.5);
     --shadow-text-light: 0 1px 2px rgba(0, 0, 0, 1);
 }
 
-/* Mystic Theme */
 .theme-mystic {
     --bg-parchment: #1a0a2a;
     --bg-parchment-dark: #10051a;
@@ -109,19 +85,20 @@
     --msg-bot-bg: rgba(255, 255, 255, 0.08);
     --msg-bot-border: rgba(191, 95, 255, 0.25);
     --border-subtle: rgba(191, 95, 255, 0.2);
-    --border-solid: rgba(191, 95, 255, 0.5);
     --shadow-text-light: 0 1px 2px rgba(0, 0, 0, 1);
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* === WOODEN DESK BACKGROUND === */
 body {
     font-family: 'Crimson Text', serif;
-    background: radial-gradient(circle at center, #3a2a22 0%, #1a100c 100%);
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+        url('https://www.transparenttextures.com/patterns/dark-wood.png'),
+        linear-gradient(135deg, #2d1810 0%, #1a0f0a 100%);
+    background-size: auto, auto, cover;
+    background-attachment: fixed;
     color: var(--text-ink);
     height: 100vh;
     display: flex;
@@ -130,66 +107,30 @@ body {
     overflow: hidden;
 }
 
-h1,
-h2,
-h3,
-button,
-label,
-.tab-btn {
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.5px;
-}
+h1, h2, h3, button, label { font-family: 'Cinzel', serif; }
 
-/* =========================================
-   THE BOOK CONTAINER
-   ========================================= */
+/* === 90% SCALE - BETTER FIT === */
 .book-container {
     width: 95vw;
     height: 90vh;
-    background-color: var(--bg-parchment);
+    background: var(--bg-parchment);
     display: flex;
-    box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.6),
-        0 0 0 4px #3e2723;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 0 4px #3e2723;
     border-radius: 6px;
-    position: relative;
     overflow: hidden;
-    transition: var(--transition-smooth);
+    transform: scale(0.9);
+    transform-origin: center;
 }
 
-/* Realistic Spine Shadow */
-.book-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 300px;
-    width: 20px;
-    background: linear-gradient(to right,
-            rgba(0, 0, 0, 0.05) 0%,
-            rgba(0, 0, 0, 0.25) 45%,
-            rgba(0, 0, 0, 0.3) 50%,
-            rgba(0, 0, 0, 0.15) 55%,
-            rgba(0, 0, 0, 0) 100%);
-    z-index: 10;
-    pointer-events: none;
-}
-
-/* =========================================
-   SIDEBAR (Index)
-   ========================================= */
 .sidebar {
     width: 300px;
-    background-color: var(--bg-parchment-dark);
+    background: var(--bg-parchment-dark);
     border-right: 1px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
     padding: 25px 20px;
-    box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.03);
-    z-index: 5;
 }
 
-/* --- Sidebar Header: title + new fantasy button inline --- */
 .sidebar-header {
     border-bottom: 2px solid var(--accent-gold);
     padding-bottom: 15px;
@@ -203,40 +144,27 @@ label,
 .sidebar-header h2 {
     font-size: 1.4rem;
     color: var(--accent-wood-dark);
-    text-shadow: var(--shadow-text-light);
     font-weight: 700;
-    white-space: nowrap;
 }
 
-/* "+" button lives inside the sidebar header */
-#btn-new-fantasy,
-.btn-new-fantasy {
+#btn-new-fantasy {
     width: 36px;
     height: 36px;
-    min-width: 36px;
-    border-radius: 8px;
     background: var(--accent-wood);
     color: #f8f0d8;
     border: 2px solid var(--accent-wood-dark);
     font-size: 1.4rem;
-    font-family: 'Cinzel', serif;
-    font-weight: 700;
     cursor: pointer;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
 }
 
-#btn-new-fantasy:hover,
-.btn-new-fantasy:hover {
+#btn-new-fantasy:hover {
     background: var(--accent-gold);
-    color: var(--accent-wood-dark);
-    border-color: var(--accent-wood);
     transform: scale(1.08);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .fantasy-list {
@@ -245,38 +173,29 @@ label,
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-right: 8px;
 }
 
-/* IMPROVED: More visible fantasy items */
 .fantasy-item {
-    padding: 18px 18px;
+    padding: 18px;
     border: 2px solid var(--border-subtle);
     cursor: pointer;
-    transition: var(--transition-smooth);
     border-radius: 8px;
-    position: relative;
-    color: var(--text-ink);
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255,255,255,0.4);
     text-align: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
 }
 
 .fantasy-item:hover {
-    background: rgba(255, 255, 255, 0.65);
-    color: var(--accent-wood-dark);
+    background: rgba(255,255,255,0.65);
     transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-color: var(--accent-gold);
 }
 
 .fantasy-item.active {
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6));
+    background: rgba(255,255,255,0.85);
     border: 2px solid var(--accent-gold);
     border-left: 6px solid var(--accent-wood);
-    color: var(--accent-wood-dark);
     font-weight: 700;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
 .item-title {
@@ -291,71 +210,57 @@ label,
     font-size: 0.95rem;
     opacity: 0.8;
     font-style: italic;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-/* PERFECT CENTERED SETTINGS FOOTER */
 .sidebar-footer {
     border-top: 2px solid var(--border-subtle);
     padding-top: 20px;
     margin-top: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
-/* Settings button with icon and text */
+/* === FIXED SETTINGS BUTTON - PROPER BOX SIZE === */
 .settings-btn {
-    display: flex !important;
-    flex-direction: row !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 10px !important;
-    padding: 12px 24px !important;
-    width: auto !important;
-    height: auto !important;
-    border-radius: 8px !important;
+    gap: 8px !important;
+    padding: 12px 22px !important;
+    min-width: 140px !important;
     background: var(--accent-wood) !important;
     color: #f8f0d8 !important;
-    border: 2px solid var(--accent-wood-dark) !important;
-    font-family: 'Cinzel', serif !important;
-    font-size: 1rem !important;
+    border: 3px solid var(--accent-wood-dark) !important;
+    border-radius: 10px !important;
+    font-size: 0.95rem !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
     cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.2s !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    white-space: nowrap !important;
 }
 
 .settings-btn:hover {
     background: var(--accent-gold) !important;
     color: var(--accent-wood-dark) !important;
     border-color: var(--accent-wood) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4) !important;
 }
 
 .settings-btn i {
     font-size: 1.1rem;
 }
 
-/* =========================================
-   MAIN CHAT INTERFACE
-   ========================================= */
 .chat-interface {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-image: var(--bg-chat-texture);
-    position: relative;
+    background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
 }
 
-/* =========================================
-   CHAT HEADER — Fully Centered Title + Controls
-   ========================================= */
 .chat-header {
     min-height: 80px;
     padding: 0 30px;
@@ -363,67 +268,23 @@ label,
     justify-content: center;
     align-items: center;
     border-bottom: 1px solid var(--border-subtle);
-    background: rgba(0, 0, 0, 0.02);
     position: relative;
 }
 
 .chat-header h1 {
     font-size: 2.2rem;
     color: var(--accent-wood-dark);
-    text-shadow: var(--shadow-text-light);
-    margin: 0;
     text-align: center;
     flex: 1;
 }
 
-/* Settings / header controls — absolutely positioned so
-   they never push the title off-center */
 .header-controls {
     position: absolute;
     right: 25px;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 12px;
 }
 
-/* =========================================
-   SETTINGS PANEL — Centered content
-   ========================================= */
-.settings-panel,
-.settings-content,
-.settings-section {
-    text-align: center;
-}
-
-.settings-panel h2,
-.settings-panel h3,
-.settings-content h2,
-.settings-content h3 {
-    text-align: center;
-}
-
-.settings-panel label,
-.settings-content label {
-    display: block;
-    text-align: center;
-    margin-bottom: 6px;
-}
-
-.settings-panel select,
-.settings-panel input,
-.settings-content select,
-.settings-content input {
-    display: block;
-    margin: 0 auto 16px auto;
-    text-align: center;
-}
-
-/* =========================================
-   CHAT WINDOW & MESSAGES - ENHANCED READABILITY
-   ========================================= */
 .chat-window {
     flex: 1;
     overflow-y: auto;
@@ -433,36 +294,17 @@ label,
     gap: 32px;
 }
 
-.chat-placeholder {
-    text-align: center;
-    color: var(--text-meta);
-    margin-top: 30%;
-    font-style: italic;
-    font-size: 1.3rem;
-    opacity: 0.6;
-}
-
-/* =========================================
-   MESSAGE BUBBLES — MAXIMUM READABILITY
-   ========================================= */
 .message {
     font-size: 1.3rem;
     line-height: 1.9;
     padding: 22px 32px;
     border-radius: 16px;
-    position: relative;
     max-width: 75%;
-    animation: fadeIn 0.4s ease forwards;
     color: var(--text-ink);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
     font-weight: 500;
-    letter-spacing: 0.3px;
 }
 
-/* --- Sender Label (name above bubble) --- */
-.message .sender-name,
-.message .msg-sender {
+.message .sender-name {
     display: block;
     font-family: 'Cinzel', serif;
     font-size: 0.85rem;
@@ -473,168 +315,50 @@ label,
     opacity: 0.75;
 }
 
-/* --- Timestamp --- */
-.message .timestamp,
-.message .msg-time {
-    display: block;
-    font-size: 0.78rem;
-    color: var(--text-meta);
-    margin-top: 12px;
-    opacity: 0.65;
-}
-
-/* =========================================
-   USER MESSAGES — Right-aligned, warm tint
-   ========================================= */
 .msg-user {
     align-self: flex-end;
-    color: var(--text-user);
     background: var(--msg-user-bg);
     border: 2px solid var(--msg-user-border);
     border-radius: 18px 18px 4px 18px;
-    text-align: left;
-    position: relative;
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* Decorative accent bar — right side */
-.msg-user::before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    bottom: 12px;
-    right: -2px;
-    width: 5px;
-    border-radius: 4px;
-    background: linear-gradient(to bottom, var(--accent-wood), var(--accent-gold));
-}
-
-.msg-user .sender-name,
-.msg-user .msg-sender {
+.msg-user .sender-name {
     text-align: right;
     color: var(--accent-wood);
 }
 
-.msg-user .timestamp,
-.msg-user .msg-time {
-    text-align: right;
-}
-
-/* =========================================
-   BOT / AI MESSAGES — Left-aligned, light card
-   ========================================= */
-.msg-bot,
-.msg-assistant {
+.msg-bot {
     align-self: flex-start;
-    color: var(--text-ink);
     background: var(--msg-bot-bg);
     border: 2px solid var(--msg-bot-border);
     border-radius: 18px 18px 18px 4px;
-    text-align: left;
-    position: relative;
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-/* Decorative accent bar — left side */
-.msg-bot::before,
-.msg-assistant::before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    bottom: 12px;
-    left: -2px;
-    width: 5px;
-    border-radius: 4px;
-    background: linear-gradient(to bottom, var(--accent-gold), var(--accent-wood));
-}
-
-.msg-bot .sender-name,
-.msg-bot .msg-sender,
-.msg-assistant .sender-name,
-.msg-assistant .msg-sender {
+.msg-bot .sender-name {
     text-align: left;
     color: var(--accent-gold);
 }
 
-/* =========================================
-   NARRATIVE / SYSTEM TEXT — Centered divider
-   ========================================= */
 .narrative-text {
-    align-self: center;
-    color: var(--text-meta);
     font-style: italic;
-    font-family: 'Crimson Text', serif;
-    background: transparent;
-    box-shadow: none;
-    border: none;
-    text-align: center;
-    max-width: 80%;
-    font-size: 1.15rem;
-    padding: 16px 24px;
-    position: relative;
+    color: var(--text-meta);
     opacity: 0.95;
-    line-height: 1.7;
+    font-size: 1.05em;
+    letter-spacing: 0.5px;
+    display: inline;
 }
 
-/* Decorative divider lines around narrative text */
-.narrative-text::before,
-.narrative-text::after {
-    content: '';
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(
-        to right,
-        transparent,
-        var(--border-subtle) 30%,
-        var(--border-subtle) 70%,
-        transparent
-    );
-}
-
-.narrative-text::before {
-    top: 0;
-}
-
-.narrative-text::after {
-    bottom: 0;
-}
-
-/* Bold text pops */
-.message strong {
-    color: var(--accent-wood-dark);
-    font-weight: 700;
-}
-
-/* Italic text in messages - ENHANCED for actions/narration */
-.message em {
-    opacity: 0.92;
-    font-style: italic;
-    color: var(--text-meta);
-}
-
-/* =========================================
-   INPUT AREA - "Writing Desk"
-   ========================================= */
 .chat-input-area {
     padding: 20px 40px;
     background: var(--bg-parchment);
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
     border-top: 1px solid var(--border-subtle);
     display: flex;
     gap: 16px;
-    align-items: flex-end;
-    z-index: 20;
 }
 
 textarea {
     flex: 1;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255,255,255,0.15);
     color: var(--text-ink);
     border: 1px solid var(--border-subtle);
     border-bottom: 2px solid var(--accent-wood);
@@ -643,47 +367,31 @@ textarea {
     padding: 12px 16px;
     resize: none;
     outline: none;
-    max-height: 150px;
     border-radius: 12px 12px 0 0;
-    transition: var(--transition-smooth);
 }
 
 textarea:focus {
     border-bottom-color: var(--accent-gold);
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 -2px 10px rgba(197, 160, 89, 0.1);
+    background: rgba(255,255,255,0.25);
 }
 
-textarea::placeholder {
-    color: var(--text-meta);
-    font-style: italic;
-    opacity: 0.7;
-}
-
-/* =========================================
-   BUTTONS & CONTROLS
-   ========================================= */
 .icon-btn {
     background: transparent;
     border: 1px solid transparent;
     cursor: pointer;
     font-size: 1.4rem;
     color: var(--accent-wood);
-    opacity: 0.8;
-    transition: var(--transition-smooth);
     width: 40px;
     height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s;
 }
 
 .icon-btn:hover {
-    background: rgba(139, 90, 43, 0.1);
-    color: var(--accent-wood-dark);
-    opacity: 1;
-    border-color: var(--border-subtle);
+    background: rgba(139,90,43,0.1);
     transform: translateY(-2px);
 }
 
@@ -695,72 +403,55 @@ textarea::placeholder {
     height: 50px;
     border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
 }
 
 #btn-send:hover:not(:disabled) {
     background: var(--accent-gold);
-    border-color: var(--accent-wood);
-    color: var(--accent-wood-dark);
     transform: scale(1.1) rotate(-10deg);
 }
 
 #btn-send:disabled {
     opacity: 0.4;
-    cursor: not-allowed;
 }
 
-/* =========================================
-   CREATOR MODAL
-   ========================================= */
+/* === 90% SCALED MODALS === */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    animation: fadeIn 0.3s ease;
 }
 
-.hidden {
-    display: none !important;
-}
+.hidden { display: none !important; }
 
 .parchment-modal {
     width: 1100px;
     max-width: 95vw;
+    transform: scale(0.9);
+    transform-origin: center;
+}
+
+.modal-content {
     position: relative;
-    display: flex;
-    flex-direction: column;
 }
 
 .close-modal {
     position: absolute;
-    top: -50px;
-    right: 0;
+    top: -50px; right: 0;
     font-size: 3rem;
     color: #fff;
     cursor: pointer;
-    transition: transform 0.2s;
-    z-index: 1100;
-    background: rgba(0, 0, 0, 0.5);
-    width: 50px;
-    height: 50px;
+    background: rgba(0,0,0,0.5);
+    width: 50px; height: 50px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
     border: 2px solid var(--accent-gold);
 }
 
@@ -774,7 +465,6 @@ textarea::placeholder {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
-    height: 100%;
 }
 
 .split-window {
@@ -782,9 +472,6 @@ textarea::placeholder {
     padding: 30px;
     border-radius: 8px;
     border: 4px double var(--accent-wood);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
     overflow-y: auto;
     max-height: 75vh;
 }
@@ -796,7 +483,6 @@ textarea::placeholder {
     margin-bottom: 25px;
     padding-bottom: 15px;
     text-align: center;
-    letter-spacing: 1px;
 }
 
 .form-group {
@@ -806,7 +492,7 @@ textarea::placeholder {
 .split-window input,
 .split-window textarea,
 .split-window select {
-    background: rgba(255, 255, 255, 0.6) !important;
+    background: rgba(255,255,255,0.6) !important;
     color: #1a0f0a !important;
     border: 1px solid #d7c9a0;
     border-bottom: 2px solid #8b5a2b !important;
@@ -815,20 +501,16 @@ textarea::placeholder {
     font-family: 'Crimson Text', serif;
     font-size: 1.15rem;
     width: 100%;
-    font-weight: 500;
     text-align: center;
 }
 
 .split-window input:focus,
-.split-window textarea:focus,
-.split-window select:focus {
+.split-window textarea:focus {
     background: #fff !important;
     border-bottom-color: #c5a059 !important;
     outline: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Multi-line fields keep left-align for readability */
 .split-window textarea {
     text-align: left;
 }
@@ -840,18 +522,15 @@ textarea::placeholder {
     font-weight: 800;
     font-size: 0.95rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     text-align: center;
 }
 
 .modal-actions {
-    grid-column: 1 / -1;
     display: flex;
     justify-content: center;
     gap: 40px;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary {
@@ -862,7 +541,6 @@ textarea::placeholder {
     font-size: 1.2rem;
     cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     border-radius: 4px;
     transition: all 0.2s;
 }
@@ -871,7 +549,6 @@ textarea::placeholder {
     background: var(--accent-gold);
     color: var(--accent-wood-dark);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 .btn-danger {
@@ -883,49 +560,111 @@ textarea::placeholder {
     cursor: pointer;
     font-weight: bold;
     border-radius: 4px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.btn-danger:hover {
-    background: #a00;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+.settings-section {
+    margin-bottom: 30px;
 }
 
-/* =========================================
-   SCROLLBARS
-   ========================================= */
-::-webkit-scrollbar {
-    width: 10px;
+.settings-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent-wood);
+    border-bottom: 2px solid var(--accent-gold);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--accent-wood);
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--accent-wood);
-    border-radius: 5px;
-    border: 2px solid rgba(0, 0, 0, 0);
-    background-clip: padding-box;
+#stats-display {
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    background: rgba(0,0,0,0.05);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+    line-height: 1.6;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--accent-gold);
+#modal-settings .modal-content {
+    background: var(--bg-parchment) !important;
+    padding: 30px;
+    border-radius: 8px;
+    border: 4px double var(--accent-wood);
 }
 
-/* =========================================
-   ANIMATIONS
-   ========================================= */
+#modal-settings h2 {
+    font-size: 1.8rem;
+    color: var(--accent-wood-dark);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#modal-settings input[type="text"],
+#modal-settings input[type="number"] {
+    background: rgba(255,255,255,0.6) !important;
+    color: var(--text-ink) !important;
+    border: 1px solid var(--border-subtle);
+    border-bottom: 2px solid var(--accent-wood) !important;
+    padding: 12px;
+    border-radius: 4px;
+    font-family: 'Crimson Text', serif;
+    font-size: 1.1rem;
+    width: 100%;
+}
+
+#modal-settings input:focus {
+    background: #fff !important;
+    border-bottom-color: var(--accent-gold) !important;
+    outline: none;
+}
+
+#modal-settings .form-group label {
+    font-weight: 600;
+    color: var(--accent-wood-dark);
+    text-align: center;
+    margin-bottom: 8px;
+    display: block;
+}
+
+small {
+    font-size: 0.85rem;
+    color: var(--text-meta);
+    font-style: italic;
+}
+
+.chat-placeholder {
+    text-align: center;
+    color: var(--text-meta);
+    margin-top: 30%;
+    font-style: italic;
+    font-size: 1.3rem;
+    opacity: 0.6;
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+::-webkit-scrollbar-thumb { 
+    background: var(--accent-wood); 
+    border-radius: 5px; 
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent-gold); }
+
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }

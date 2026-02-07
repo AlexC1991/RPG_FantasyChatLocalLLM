@@ -153,6 +153,102 @@
         </div>
     </div>
 
+    <!-- MODAL: GLOBAL SETTINGS -->
+    <div id="modal-settings" class="modal hidden">
+        <div class="modal-content parchment-modal" style="max-width: 700px;">
+            <span class="close-modal" id="close-settings">&times;</span>
+            <h2 style="text-align: center; color: var(--accent-wood-dark); margin-bottom: 30px;">Global Settings</h2>
+            
+            <form id="form-settings" style="padding: 30px;">
+                
+                <!-- Archive Settings -->
+                <div class="settings-section">
+                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-box-archive"></i> Archive Settings
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label>Archive Path</label>
+                        <input type="text" id="setting-archive-path" 
+                               placeholder="D:/AI_Fantasy_Archives" 
+                               style="font-family: 'Courier New', monospace; text-align: left;">
+                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
+                            Choose where to save old conversation history
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Max Archive Size (MB)</label>
+                        <input type="number" id="setting-archive-size" 
+                               min="10" max="10000" value="100">
+                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
+                            Maximum folder size before cleanup (10-10000 MB)
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Context Settings -->
+                <div class="settings-section" style="margin-top: 30px;">
+                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-memory"></i> Context Settings
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label>Context Window Size</label>
+                        <input type="number" id="setting-context-size" 
+                               min="512" max="32768" value="4096" step="512">
+                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
+                            Larger = longer conversations (requires more RAM)
+                        </small>
+                    </div>
+                </div>
+
+                <!-- RAG Settings -->
+                <div class="settings-section" style="margin-top: 30px;">
+                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-brain"></i> RAG Memory System
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <input type="checkbox" id="setting-enable-rag" 
+                                   style="width: auto; margin: 0;">
+                            Enable RAG (Retrieve old conversations)
+                        </label>
+                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
+                            AI can remember archived conversations
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>RAG Retrieve Count</label>
+                        <input type="number" id="setting-rag-count" 
+                               min="1" max="20" value="5">
+                        <small style="display: block; margin-top: 5px; opacity: 0.7; text-align: center;">
+                            How many old messages to retrieve (1-20)
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Statistics Display -->
+                <div class="settings-section" style="margin-top: 30px;">
+                    <h3 style="color: var(--accent-wood); border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-chart-line"></i> Statistics
+                    </h3>
+                    <div id="stats-display" style="font-family: 'Courier New', monospace; font-size: 0.9rem; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px; text-align: left;">
+                        Loading...
+                    </div>
+                </div>
+                
+                <div class="modal-actions" style="margin-top: 30px;">
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-save"></i> Save Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>

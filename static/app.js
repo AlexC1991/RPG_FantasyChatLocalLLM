@@ -51,9 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     elTempInput.addEventListener('input', (e) => elTempVal.textContent = e.target.value);
 
-    // TAB LOGIC REMOVED - Using Split View
-
-
     elFormFantasy.addEventListener('submit', async (e) => {
         e.preventDefault();
         await saveFantasy();
@@ -85,25 +82,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch('/api/models');
         const models = await res.json();
 
-        // Clear & Add Default
         elModelSelect.innerHTML = '<option value="default">Default (System Config)</option>';
 
         models.forEach(model => {
             const option = document.createElement('option');
             option.value = model;
 
-            // Categorization Logic
             let displayName = model;
-            // Remove file extension for cleaner look
             const cleanName = model.replace(/\.gguf$/i, '');
 
             if (model.toLowerCase().includes('dolphin')) {
                 displayName = `🔓 ${cleanName} (Unrestricted - Creative)`;
-                option.style.color = "#d9534f"; // Reddish for "Unrestricted"
+                option.style.color = "#d9534f";
                 option.style.fontWeight = "bold";
             } else {
                 displayName = `🛡️ ${cleanName} (Safe - Restricted)`;
-                option.style.color = "#5cb85c"; // Greenish for "Safe"
+                option.style.color = "#5cb85c";
             }
 
             option.textContent = displayName;
@@ -134,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
             history: []
         };
 
-        // If editing, merge with existing data to keep history
         if (id) {
             const existing = fantasies.find(f => f.id === id);
             if (existing) payload.history = existing.history || [];
@@ -150,9 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal();
         await fetchFantasies();
 
-        // Auto select if new
         if (!id) selectFantasy(data.id);
-        // If current, refresh style
         if (currentFantasyId === data.id) selectFantasy(data.id);
     }
 
@@ -167,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         elBtnEditFantasy.style.display = 'none';
         document.getElementById('btn-reset-chat').style.display = 'none';
 
-        // Reset theme
         document.querySelector('.book-container').className = 'book-container';
 
         await fetchFantasies();
@@ -180,14 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessageToChat('user', text);
         elUserInput.value = '';
 
-        // Get current fantasy
         const fantasy = fantasies.find(f => f.id === currentFantasyId);
 
-        // Update local history
         if (!fantasy.history) fantasy.history = [];
         fantasy.history.push({ role: "user", content: text });
 
-        // Generate AI Response
         const bubble = addMessageToChat('ai', '...');
         let fullResponse = "";
 
@@ -197,18 +184,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: text,
-                    history: fantasy.history, // We send full history for context
+                    history: fantasy.history,
                     system_prompt: fantasy.system_prompt,
                     model_config: fantasy.model_config,
                     user_name: fantasy.user_name,
-                    ai_name: fantasy.ai_name
+                    ai_name: fantasy.ai_name,
+                    fantasy_id: fantasy.id
                 })
             });
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
 
-            // Clear loading dots
             bubble.innerHTML = '';
 
             while (true) {
@@ -220,9 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 elChatWindow.scrollTop = elChatWindow.scrollHeight;
             }
 
-            // Save history
             fantasy.history.push({ role: "assistant", content: fullResponse });
-            // Persist to disk (silent save)
             silentSave(fantasy);
 
         } catch (err) {
@@ -234,20 +219,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentFantasyId) return;
 
         try {
-            // Clear Frontend
             elChatWindow.innerHTML = '';
 
-            // Find fantasy
             const fantasy = fantasies.find(f => f.id === currentFantasyId);
             if (fantasy) {
-                fantasy.history = []; // Clear local history
-                await silentSave(fantasy); // Save empty history to disk
+                fantasy.history = [];
+                await silentSave(fantasy);
             }
 
-            // Reset Backend Context
             await fetch('/api/reset', { method: 'POST' });
 
-            // Add starter text
             elChatWindow.innerHTML = '<div class="chat-placeholder"><p>The story begins anew...</p></div>';
 
             console.log("Chat cleared successfully.");
@@ -273,8 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.className = `fantasy-item ${f.id === currentFantasyId ? 'active' : ''}`;
             div.innerHTML = `
-                <div class="f-title">${f.title}</div>
-                <div class="f-desc" style="font-size:0.8em; color:#666;">${f.description.substring(0, 50)}...</div>
+                <span class="item-title">${f.title}</span>
+                <span class="item-preview">${f.description.substring(0, 50)}...</span>
             `;
             div.onclick = () => selectFantasy(f.id);
             elFantasyList.appendChild(div);
@@ -291,11 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btn-reset-chat').style.display = 'inline-block';
         toggleInput(true);
 
-        // Apply Theme
         const theme = fantasy.theme || 'default';
         document.querySelector('.book-container').className = `book-container theme-${theme}`;
 
-        // Load History
         elChatWindow.innerHTML = '';
         if (fantasy.history && fantasy.history.length > 0) {
             fantasy.history.forEach(msg => {
@@ -309,14 +288,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatMessage(text) {
-        // 1. Convert Markdown
+        // Convert Markdown
         let html = marked.parse(text);
 
-        // 2. Wrap text in [brackets] with span (Global replace)
-        // We look for [ ... ] and wrap it in a span, stripping the brackets slightly
-        // or just hiding them. User requested "not have the [ ] displayed".
-
-        html = html.replace(/\[(.*?)\]/g, '<span class="narrative-text">$1</span>');
+        // KEEP THE BRACKETS but style the content inside
+        // Replace [text] with styled span that INCLUDES the brackets
+        html = html.replace(/\[(.*?)\]/g, '<span class="narrative-text">[$1]</span>');
 
         return html;
     }
@@ -325,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.className = `message msg-${role}`;
 
-        // Nameplate
         const fantasy = fantasies.find(f => f.id === currentFantasyId);
         let name = role === 'user' ? "You" : "AI";
         if (fantasy) {
@@ -333,27 +309,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if (role === 'ai' && fantasy.ai_name) name = fantasy.ai_name;
         }
 
-        const header = document.createElement('div');
-        header.className = 'message-header';
+        const header = document.createElement('span');
+        header.className = 'sender-name';
         header.textContent = name;
         div.appendChild(header);
 
         const contentDiv = document.createElement('div');
-        if (role === 'ai') {
-            contentDiv.innerHTML = formatMessage(text);
-        } else {
-            // Even user text might have narration
-            contentDiv.innerHTML = formatMessage(text);
-        }
+        contentDiv.innerHTML = formatMessage(text);
         div.appendChild(contentDiv);
 
-        // Remove placeholder if exists
         const ph = elChatWindow.querySelector('.chat-placeholder');
         if (ph) ph.remove();
 
         elChatWindow.appendChild(div);
         elChatWindow.scrollTop = elChatWindow.scrollHeight;
-        return contentDiv; // Return content div for streaming updates
+        return contentDiv;
     }
 
     function openModal(fantasy = null) {
@@ -389,4 +359,143 @@ document.addEventListener('DOMContentLoaded', () => {
         elBtnSend.disabled = !enabled;
         if (enabled) elUserInput.focus();
     }
+
+    // ========================================
+    // SETTINGS MODAL FUNCTIONALITY
+    // ========================================
+
+    // Open Settings Modal
+    async function openSettingsModal() {
+        document.getElementById('modal-settings').classList.remove('hidden');
+        
+        try {
+            const response = await fetch('/api/settings');
+            const settings = await response.json();
+            
+            document.getElementById('setting-archive-path').value = settings.archive_path || './context_archive';
+            document.getElementById('setting-archive-size').value = settings.max_archive_size_mb || 100;
+            document.getElementById('setting-context-size').value = settings.context_window_size || 4096;
+            document.getElementById('setting-enable-rag').checked = settings.enable_rag !== false;
+            document.getElementById('setting-rag-count').value = settings.rag_retrieve_count || 5;
+            
+            updateStatsDisplay();
+        } catch (error) {
+            console.error('Error loading settings:', error);
+            alert('Failed to load settings. Using defaults.');
+        }
+    }
+
+    // Close Settings Modal
+    function closeSettingsModal() {
+        document.getElementById('modal-settings').classList.add('hidden');
+    }
+
+    // Update Statistics Display
+    async function updateStatsDisplay() {
+        const statsDiv = document.getElementById('stats-display');
+        
+        try {
+            const response = await fetch('/api/stats');
+            
+            if (!response.ok) {
+                statsDiv.textContent = 'Engine not loaded yet. Start a conversation first.';
+                return;
+            }
+            
+            const stats = await response.json();
+            
+            const text = `Model: ${stats.model || 'N/A'}
+Mode: ${stats.mode || 'N/A'}
+GPU Layers: ${stats.gpu_layers || 0}
+
+Messages in RAM: ${stats.messages_in_history || 0}
+Total Archived: ${stats.total_archived_messages || 0}
+Context Size: ${stats.context_size || 0} tokens
+
+RAG Enabled: ${stats.rag_enabled ? 'Yes' : 'No'}
+Total Retrievals: ${stats.total_rag_retrievals || 0}
+Embedding Cache: ${stats.embedding_cache_size || 0}
+
+Archive Size: ${(stats.archive_size_mb || 0).toFixed(2)} MB
+Archive Path: ${stats.archive_path || 'N/A'}`;
+            
+            statsDiv.textContent = text;
+        } catch (error) {
+            statsDiv.textContent = 'Engine not initialized yet.';
+        }
+    }
+
+    // Save Settings
+    async function saveSettings(event) {
+        event.preventDefault();
+        
+        const settings = {
+            archive_path: document.getElementById('setting-archive-path').value,
+            max_archive_size_mb: parseInt(document.getElementById('setting-archive-size').value),
+            context_window_size: parseInt(document.getElementById('setting-context-size').value),
+            enable_rag: document.getElementById('setting-enable-rag').checked,
+            rag_retrieve_count: parseInt(document.getElementById('setting-rag-count').value)
+        };
+        
+        try {
+            const response = await fetch('/api/settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(settings)
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                alert('Settings saved successfully!\n\nNote: Context window size changes require restarting the app.');
+                closeSettingsModal();
+            } else {
+                alert('Failed to save settings. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            alert('Error saving settings: ' + error.message);
+        }
+    }
+
+    // Wire up settings event listeners
+    const settingsBtn = document.getElementById('btn-global-settings');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', openSettingsModal);
+    }
+    
+    const closeSettingsBtn = document.getElementById('close-settings');
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', closeSettingsModal);
+    }
+    
+    const settingsForm = document.getElementById('form-settings');
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', saveSettings);
+    }
+    
+    const settingsModal = document.getElementById('modal-settings');
+    if (settingsModal) {
+        settingsModal.addEventListener('click', function(e) {
+            if (e.target === settingsModal) {
+                closeSettingsModal();
+            }
+        });
+    }
+    
+    // ESC key closes modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSettingsModal();
+            closeModal();
+        }
+    });
+
+    // Auto-refresh stats every 10 seconds when modal is open
+    setInterval(function() {
+        const modal = document.getElementById('modal-settings');
+        if (modal && !modal.classList.contains('hidden')) {
+            updateStatsDisplay();
+        }
+    }, 10000);
 });
