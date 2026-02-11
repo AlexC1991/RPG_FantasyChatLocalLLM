@@ -87,8 +87,8 @@ def get_hardware_config():
     elif gpu_type == "AMD_8GB_SAFE":
         # THE FIX: Run 35 Layers on Vulkan.
         # This leaves ~1.5GB VRAM free, preventing crashes when Image Gen starts.
-        mode = "AMD (Vulkan - 35 Layer Limit)"
-        layers = 35 
+        mode = "AMD (Vulkan - 26 Layer Limit)"
+        layers = 26
         use_flash_attn = False 
         
     elif gpu_type == "AMD_RADEON":
