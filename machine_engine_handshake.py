@@ -88,7 +88,7 @@ def get_hardware_config():
         # THE FIX: Run 35 Layers on Vulkan.
         # This leaves ~1.5GB VRAM free, preventing crashes when Image Gen starts.
         mode = "AMD (Vulkan - 26 Layer Limit)"
-        layers = 26 
+        layers = 26
         use_flash_attn = False 
         
     elif gpu_type == "AMD_RADEON":
@@ -111,7 +111,7 @@ def get_hardware_config():
         "n_threads_batch": optimal_batch_threads, 
         "n_batch": 512,
         "flash_attn": use_flash_attn,
-        "use_mlock": False,    # DISABLED: Causing potential OOM/Instability on 8GB cards with large context
+        "use_mlock": True,     # Lock memory to prevent swapping
         "busy_wait": "1",      # Vulkan optimization
         "cache_type_k": "f16", # Save VRAM
         "cache_type_v": "f16"  # Save VRAM
