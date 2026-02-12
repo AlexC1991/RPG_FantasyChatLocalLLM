@@ -2,6 +2,8 @@ import os
 import json
 import uuid
 import glob
+import gc
+import time
 from flask import Flask, render_template, request, jsonify, Response, stream_with_context
 from vox_api import VoxAPI
 
@@ -164,6 +166,14 @@ def get_initial_message():
         should_reload = True
         
     if should_reload:
+        if engine:
+            print("[VOX] Unloading current engine...")
+            engine.close()
+            del engine
+            engine = None
+            gc.collect()
+            time.sleep(2)  # Give vulkan driver time to release VRAM
+
         try:
             print(f"[VOX] Loading model: {requested_model}...")
             settings = load_settings()
@@ -270,6 +280,14 @@ def chat():
     should_reload = (engine is None) or (requested_model != 'default' and requested_model != engine.model_name)
     
     if should_reload:
+        if engine:
+            print("[VOX] Unloading current engine...")
+            engine.close()
+            del engine
+            engine = None
+            gc.collect()
+            time.sleep(2)  # Give vulkan driver time to release VRAM
+
         model_path = None
         if requested_model != 'default':
             model_path = os.path.abspath(os.path.join(MODELS_DIR, requested_model))

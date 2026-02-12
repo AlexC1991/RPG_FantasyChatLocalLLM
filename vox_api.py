@@ -277,3 +277,13 @@ class VoxAPI:
             "messages": len(self.history),
             "rag_enabled": self.enable_rag
         }
+
+    def close(self):
+        """
+        Explicitly release resources to prevent VRAM leaks.
+        """
+        if hasattr(self, 'llm') and self.llm:
+            del self.llm
+            self.llm = None
+        self.embedding_cache.clear()
+        self.history = []
